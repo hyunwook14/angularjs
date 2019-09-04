@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -68,6 +69,20 @@ public class HomeController {
 		return resultMap;
 	}
 	
+	/*
+	 * 로그인
+	 * */
+	
+	@RequestMapping(value="/exam/login", method=RequestMethod.POST)
+	public @ResponseBody boolean login(HttpServletRequest req, HttpSession session) {
+		
+		boolean result =bs.login(req, session);
+		
+		System.out.println("세션 유지?: "+session.getAttribute("id"));
+		
+		return result;
+		
+	}
 	
 	
 }

@@ -12,11 +12,45 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 	<script>
+	
 		var app =angular.module('Myapp', []);
 		var list =[];
 		var idx = 0;
+		var loginflag = false;
+		var logininfo ={};
 		
 			app.controller('formCtl',function($scope, $http){
+				
+				<% if(session.getAttribute("id") == null) { %>
+				document.getElementById("myModal").style.display= "block";
+				<% } else { %>
+					document.getElementById("myModal").style.display="";
+					loginflag=true;
+					$scope.loginid ="<%= session.getAttribute("id") %>";
+					<%
+				}%>
+				
+				$scope.reloadRoute = function() {
+					   $window.location.reload();
+				}
+				
+				
+				$scope.login = function(){
+					
+					logininfo.id = $scope.id;
+					logininfo.pw = $scope.pw;
+					$http({
+						url:"/web/exam/login",
+						method:"POST",
+						params:logininfo
+					}).then(function(data){
+						console.log("login 성공:", data);
+						document.getElementById("myModal").style.display= "";
+						
+					});
+					
+				}
+				
 				$scope.todos = {};
 				$scope.text="";
 				
@@ -36,6 +70,7 @@
 					let data={};
 					data.txt = $scope.text;
 					data.status= false;
+					data.id = $scope.loginid;
 					
 					$scope.text="";
 					
@@ -99,6 +134,8 @@
 				}
 				
 			});
+			
+			
 
 	</script>
 </head>
@@ -142,16 +179,17 @@
 		      <td><input type="checkbox" data-ng-click="checkEvent(row)" name="checkbox" ng-model="checked"> </td>
 		      <td>{{row.no}}</td><!-- ($index + 1) -->
 		      <td>{{row.txt}}</td>
-		      <td>{{}}</td>
+		      <td>{{row.user}}</td>
 		    </tr>
   
 	  </tbody>
 	</table>
 </div>
 <!-- Modal -->
+<todo-modal></todo-modal>
 <div class="container">
   <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
+  <div class="modal " id="myModal" role="dialog">
     <div class="modal-dialog">
     
       <!-- Modal content-->
@@ -164,13 +202,13 @@
           <form role="form">
             <div class="form-group">
               <label for="usrname"><span class="glyphicon glyphicon-user"></span> Username</label>
-              <input type="text" class="form-control" id="usrname" placeholder="Enter email" required="required" autocomplete="off">
+              <input type="text" class="form-control" id="usrname" placeholder="Enter email" required="required" autocomplete="off" data-ng-model="id">
             </div>
             <div class="form-group">
               <label for="psw"><span class="glyphicon glyphicon-eye-open"></span> Password</label>
-              <input type="text" class="form-control" id="psw" placeholder="Enter password" required="required" autocomplete="off">
+              <input type="text" class="form-control" id="psw" placeholder="Enter password" required="required" autocomplete="off" data-ng-model="pw">
             </div>
-              <button type="submit" class="btn btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Login</button>
+              <button type="submit" class="btn btn-success btn-block" data-ng-click="login()"><span class="glyphicon glyphicon-off"></span> Login</button>
           </form>
         </div>
       </div>

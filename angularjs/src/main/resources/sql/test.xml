@@ -8,11 +8,11 @@
   </select>
  
   <insert id="boardinsert" parameterType="com.java.web.board.Board">
-  	insert into board (COMMENT) values (#{comment})
+  	insert into board (COMMENT, USER) values (#{comment}, #{user})
   </insert> 
   
   <select id="boardselect" resultType="com.java.web.board.Board">
-  	select NO, COMMENT, delYN from board where delYN = 'N'
+  	select NO, COMMENT, delYN, user from board where delYN = 'N'
   </select>
   
   <update id="boardupdate" parameterType="com.java.web.board.Board" >
@@ -22,5 +22,13 @@
   <update id="boarddelete" parameterType="com.java.web.board.Board" >
   	UPDATE board SET delYN = 'Y' WHERE NO = #{no} 
   </update>
+  
+  <select id="userselectid" parameterType="com.java.web.user.User" resultType="com.java.web.user.User">
+  	select id, pwd from user where id = #{id} 
+  	<if test =" pwd != 0">
+		and pwd = #{pwd}  	
+  	</if>
+  	
+  </select>
  
 </mapper>
